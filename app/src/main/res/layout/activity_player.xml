@@ -67,16 +67,11 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="250dp"
-            android:src="@drawable/gradient_bg"
+
             android:scaleType="centerCrop"
             android:layout_alignParentBottom="true"
             android:id="@+id/imgViewGradient"
-
-
             />
-
-
-
     </RelativeLayout>
     
     <TextView

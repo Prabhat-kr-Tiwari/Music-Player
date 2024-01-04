@@ -2,6 +2,7 @@ package com.example.musicplayer
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
@@ -378,14 +379,44 @@ class PlayerActivity : AppCompatActivity() {
             Palette.from(bitmap).generate(object :Palette.PaletteAsyncListener{
                 override fun onGenerated(palette: Palette?) {
 
-                    val swatch=palette?.dominantSwatch
+                    var swatch=palette?.dominantSwatch
                     if (swatch!=null){
                         val gradient=binding.imgViewGradient
                         val mContainer=binding.mContainer
-                        mContainer.setBackgroundResource(R.drawable.gradient_bg)
+                        gradient.setBackgroundResource(R.drawable.gradient_bg)
+                        mContainer.setBackgroundResource(R.drawable.main_bg)
                         val gradientDrawable=GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP,
-                            IntArray(swatch.rgb,0x000000)
+                            intArrayOf(swatch.rgb,0x000000)
                         )
+                        gradient.background=gradientDrawable
+
+                        val gradientDrawableBg=GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP,
+                            intArrayOf(swatch.rgb,swatch.rgb)
+
+                        )
+                        mContainer.background=gradientDrawableBg
+                        binding.songName.setTextColor(swatch.titleTextColor)
+                        binding.songArtist.setTextColor(swatch.bodyTextColor)
+
+
+                    }else{
+                        val gradient=binding.imgViewGradient
+                        val mContainer=binding.mContainer
+                        gradient.setBackgroundResource(R.drawable.gradient_bg)
+                        mContainer.setBackgroundResource(R.drawable.main_bg)
+                        val gradientDrawable=GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP,
+                            intArrayOf(0xff000000.toInt(),0x000000)
+                        )
+                        gradient.background=gradientDrawable
+
+                        val gradientDrawableBg=GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP,
+                            intArrayOf(0xff000000.toInt(), 0xff000000.toInt())
+
+                        )
+                        mContainer.background=gradientDrawableBg
+                        binding.songName.setTextColor(Color.WHITE)
+                        binding.songArtist.setTextColor(Color.DKGRAY)
+
                     }
                 }
 
@@ -394,6 +425,13 @@ class PlayerActivity : AppCompatActivity() {
         } else {
 
             Glide.with(this).asBitmap().load(R.drawable.img).into(cover_art)
+
+            val gradient=binding.imgViewGradient
+            val mContainer=binding.mContainer
+            gradient.setBackgroundResource(R.drawable.gradient_bg)
+            mContainer.setBackgroundResource(R.drawable.main_bg)
+            binding.songName.setTextColor(Color.WHITE)
+            binding.songArtist.setTextColor(Color.DKGRAY)
         }
 
 
