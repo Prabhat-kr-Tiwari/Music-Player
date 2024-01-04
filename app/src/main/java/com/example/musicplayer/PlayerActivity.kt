@@ -1,5 +1,6 @@
 package com.example.musicplayer
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -11,6 +12,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.animation.Animation
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
@@ -19,9 +21,10 @@ import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
 import com.example.musicplayer.MainActivity.Companion.musicFiles
 import com.example.musicplayer.databinding.ActivityPlayerBinding
+import com.google.android.material.animation.AnimationUtils
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class PlayerActivity : AppCompatActivity() {
+class PlayerActivity : AppCompatActivity(),  MediaPlayer.OnCompletionListener{
     lateinit var binding: ActivityPlayerBinding
     lateinit var song_name: TextView
     lateinit var artist_name: TextView
@@ -59,6 +62,7 @@ class PlayerActivity : AppCompatActivity() {
         getIntentMethod()
         song_name.text = listSongs.get(position).title
         artist_name.text = listSongs.get(position).artist
+        mediaPlayer.setOnCompletionListener(this)
         binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, progress: Int, fromUser: Boolean) {
 
@@ -140,7 +144,8 @@ class PlayerActivity : AppCompatActivity() {
                 }
 
             })
-            playPauseBtn.setImageResource(R.drawable.baseline_pause_24)
+            mediaPlayer.setOnCompletionListener(this)
+            playPauseBtn.setBackgroundResource(R.drawable.baseline_pause_24)
             mediaPlayer.start()
 
         }else{
@@ -166,7 +171,9 @@ class PlayerActivity : AppCompatActivity() {
                 }
 
             })
-            playPauseBtn.setImageResource(R.drawable.baseline_play_arrow_24)
+            mediaPlayer.setOnCompletionListener(this)
+            //to change imageview and run time setBackgroundResource()
+            playPauseBtn.setBackgroundResource(R.drawable.baseline_play_arrow_24)
         }
     }
 
@@ -217,7 +224,8 @@ class PlayerActivity : AppCompatActivity() {
                 }
 
             })
-            playPauseBtn.setImageResource(R.drawable.baseline_pause_24)
+            mediaPlayer.setOnCompletionListener(this)
+            playPauseBtn.setBackgroundResource(R.drawable.baseline_pause_24)
             mediaPlayer.start()
 
         }else{
@@ -244,7 +252,8 @@ class PlayerActivity : AppCompatActivity() {
                 }
 
             })
-            playPauseBtn.setImageResource(R.drawable.baseline_play_arrow_24)
+            mediaPlayer.setOnCompletionListener(this)
+            playPauseBtn.setBackgroundResource(R.drawable.baseline_play_arrow_24)
         }
     }
 
@@ -371,11 +380,12 @@ class PlayerActivity : AppCompatActivity() {
         val durationTotal = (listSongs.get(position).duration).toInt() / 1000
         binding.durationTotal.text = formattedTime(durationTotal)
         val art: ByteArray? = retriever.embeddedPicture
-        val bitmap:Bitmap
+        val bitmap: Bitmap?
 
         if (art != null) {
-            Glide.with(this).asBitmap().load(art).into(cover_art)
+
             bitmap=BitmapFactory.decodeByteArray(art,0,art.size)
+            imageAnimation(this,cover_art,bitmap!!)
             Palette.from(bitmap).generate(object :Palette.PaletteAsyncListener{
                 override fun onGenerated(palette: Palette?) {
 
@@ -436,4 +446,49 @@ class PlayerActivity : AppCompatActivity() {
 
 
     }
+    //fade out and fade in animation
+    private fun imageAnimation(context: Context,imageView: ImageView,bitmap: Bitmap){
+
+        val animOut=android.view.animation.AnimationUtils.loadAnimation(context,android.R.anim.fade_out)
+        val animIn=android.view.animation.AnimationUtils.loadAnimation(context,android.R.anim.fade_in)
+        animOut.setAnimationListener(object :Animation.AnimationListener{
+            override fun onAnimationStart(p0: Animation?) {
+
+            }
+
+            override fun onAnimationEnd(p0: Animation?) {
+
+                Glide.with(context).load(bitmap).into(imageView)
+                animIn.setAnimationListener(object :Animation.AnimationListener{
+                    override fun onAnimationStart(p0: Animation?) {
+                    }
+
+                    override fun onAnimationEnd(p0: Animation?) {
+                    }
+
+                    override fun onAnimationRepeat(p0: Animation?) {
+                    }
+                })
+                imageView.startAnimation(animIn)
+
+            }
+
+            override fun onAnimationRepeat(p0: Animation?) {
+
+            }
+
+        })
+        imageView.startAnimation(animOut)
+
+    }
+
+    override fun onCompletion(p0: MediaPlayer?) {
+        nextBtnClicked()
+        if (mediaPlayer!=null){
+            mediaPlayer= MediaPlayer.create(applicationContext,uri)
+            mediaPlayer.start()
+            mediaPlayer.setOnCompletionListener(this)
+        }
+    }
+
 }
