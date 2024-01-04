@@ -22,6 +22,8 @@ class MainActivity : AppCompatActivity() {
     private val requestCode = 123
     companion object{
         var musicFiles=ArrayList<MusicFiles>()
+        var shuffleBoolean=false
+        var repeatBoolean=false
     }
 
 
