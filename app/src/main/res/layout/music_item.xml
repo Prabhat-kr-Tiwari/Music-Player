@@ -23,10 +23,11 @@
         android:id="@+id/music_file_name"
         />
     <ImageView
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:src="@drawable/baseline_more_vert_24"
         android:padding="5dp"
+        android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
         android:id="@+id/menuMore"/>
 
