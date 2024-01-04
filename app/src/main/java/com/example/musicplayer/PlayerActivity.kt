@@ -20,9 +20,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
 import com.example.musicplayer.MainActivity.Companion.musicFiles
+import com.example.musicplayer.MainActivity.Companion.repeatBoolean
+import com.example.musicplayer.MainActivity.Companion.shuffleBoolean
 import com.example.musicplayer.databinding.ActivityPlayerBinding
 import com.google.android.material.animation.AnimationUtils
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlin.random.Random
 
 class PlayerActivity : AppCompatActivity(),  MediaPlayer.OnCompletionListener{
     lateinit var binding: ActivityPlayerBinding
@@ -89,6 +92,26 @@ class PlayerActivity : AppCompatActivity(),  MediaPlayer.OnCompletionListener{
             }
 
         })
+        //shuffle button
+        binding.shuffle.setOnClickListener {
+            if (shuffleBoolean){
+                shuffleBoolean=false
+                binding.shuffle.setImageResource(R.drawable.baseline_shuffle_24)
+            }else{
+                shuffleBoolean=true
+                binding.shuffle.setImageResource(R.drawable.baseline_shuffle_on_24)
+            }
+        }
+        //repeat button
+        binding.idRepeatOff.setOnClickListener {
+            if (repeatBoolean){
+                repeatBoolean=false
+                binding.idRepeatOff.setImageResource(R.drawable.baseline_repeat_24)
+            }else{
+                repeatBoolean=true
+                binding.idRepeatOff.setImageResource(R.drawable.baseline_repeat_on_24)
+            }
+        }
 
 
     }
@@ -125,7 +148,14 @@ class PlayerActivity : AppCompatActivity(),  MediaPlayer.OnCompletionListener{
 
             mediaPlayer.stop()
             mediaPlayer.release()
-            position=((position+1)% listSongs.size)
+            //checking if shuffle button is clicked then change the positon accordingly
+            if (shuffleBoolean&&!repeatBoolean){
+                position=getRandom(listSongs.size-1)
+            }else if (!shuffleBoolean&& !repeatBoolean){
+
+                position=((position+1)% listSongs.size)
+            }
+            //else posiiton will position
             uri=Uri.parse(listSongs.get(position).path)
             mediaPlayer= MediaPlayer.create(applicationContext, uri)
             metaData(uri)
@@ -152,7 +182,15 @@ class PlayerActivity : AppCompatActivity(),  MediaPlayer.OnCompletionListener{
 
             mediaPlayer.stop()
             mediaPlayer.release()
-            position=((position+1)% listSongs.size)
+
+
+            //checking if shuffle button is clicked then change the positon accordingly
+            if (shuffleBoolean&&!repeatBoolean){
+                position=getRandom(listSongs.size-1)
+            }else if (!shuffleBoolean&& !repeatBoolean){
+
+                position=((position+1)% listSongs.size)
+            }
             uri=Uri.parse(listSongs.get(position).path)
             mediaPlayer= MediaPlayer.create(applicationContext, uri)
             metaData(uri)
@@ -175,6 +213,13 @@ class PlayerActivity : AppCompatActivity(),  MediaPlayer.OnCompletionListener{
             //to change imageview and run time setBackgroundResource()
             playPauseBtn.setBackgroundResource(R.drawable.baseline_play_arrow_24)
         }
+    }
+
+    private fun getRandom(i: Int): Int {
+        val random= Random
+        return random.nextInt(i+1)
+
+
     }
 
     private fun prevThreadBtn() {
@@ -203,8 +248,14 @@ class PlayerActivity : AppCompatActivity(),  MediaPlayer.OnCompletionListener{
             mediaPlayer.stop()
             mediaPlayer.release()
 
+            if (shuffleBoolean&&!repeatBoolean){
+                position=getRandom(listSongs.size-1)
+            }else if (!shuffleBoolean&& !repeatBoolean){
 
-            position = if ((position - 1) < 0) listSongs.size - 1 else position - 1
+                position = if ((position - 1) < 0) listSongs.size - 1 else position - 1
+            }
+
+
 
             uri=Uri.parse(listSongs.get(position).path)
             mediaPlayer= MediaPlayer.create(applicationContext, uri)
@@ -232,7 +283,12 @@ class PlayerActivity : AppCompatActivity(),  MediaPlayer.OnCompletionListener{
 
             mediaPlayer.stop()
             mediaPlayer.release()
-            position = if ((position - 1) < 0) listSongs.size - 1 else position - 1
+            if (shuffleBoolean&&!repeatBoolean){
+                position=getRandom(listSongs.size-1)
+            }else if (!shuffleBoolean&& !repeatBoolean){
+
+                position = if ((position - 1) < 0) listSongs.size - 1 else position - 1
+            }
 
             uri=Uri.parse(listSongs.get(position).path)
             mediaPlayer= MediaPlayer.create(applicationContext, uri)

@@ -19,8 +19,16 @@
         android:layout_marginStart="10dp"
         android:layout_centerVertical="true"
         android:textColor="@color/white"
+        android:layout_toStartOf="@id/menuMore"
         android:id="@+id/music_file_name"
         />
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/baseline_more_vert_24"
+        android:padding="5dp"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/menuMore"/>
 
 
 
