@@ -126,6 +126,8 @@ class MainActivity : AppCompatActivity() {
             MediaStore.Audio.Media.DURATION,
             MediaStore.Audio.Media.DATA,//for path
             MediaStore.Audio.Media.ARTIST,
+            MediaStore.Audio.Media._ID
+
         )
         val cursor = context.contentResolver.query(uri, projection, null, null, null)
         if (cursor != null) {
@@ -135,8 +137,9 @@ class MainActivity : AppCompatActivity() {
                 val duration = cursor.getString(2)
                 val path = cursor.getString(3)
                 val artist = cursor.getString(4)
+                val id = cursor.getString(5)
 
-                val musicFiles = MusicFiles(path, title, artist, album, duration)
+                val musicFiles = MusicFiles(path, title, artist, album, duration,id)
                 //
                 Log.e("PRABHAT", "getAllAudio: ${path}   album ${album}", )
                 tempAudioList.add(musicFiles)
